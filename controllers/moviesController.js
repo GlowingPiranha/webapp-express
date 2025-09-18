@@ -1,6 +1,6 @@
-import connection from "../data/db";
+import connection from "../data/db.js";
 
-const index = (req, res) => {
+export const index = (req, res) => {
   const sql = "SELECT * FROM db_movies.movies";
   connection.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err });
@@ -9,7 +9,7 @@ const index = (req, res) => {
 };
 
 
-const show = (req, res) => {
+export const show = (req, res) => {
   const { id } = req.params;
   const movieQuery = "SELECT * FROM movies WHERE id = ?";
   const reviewsQuery = "SELECT * FROM reviews WHERE movie_id = ?";
@@ -28,7 +28,3 @@ const show = (req, res) => {
   });
 };
 
-module.exports = {
-  index,
-  show,
-};
