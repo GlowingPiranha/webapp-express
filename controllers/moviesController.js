@@ -4,7 +4,12 @@ export const index = (req, res) => {
   const sql = "SELECT * FROM db_movies.movies";
   connection.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err });
-    res.json(results);
+
+    const movieCovers = results.map(movie => ({
+      ...movie,
+      image: `movies_cover/${movie.title.toLowerCase().replace(/\s/g, "_")}.jpg`
+    }));
+    res.json(movieCovers);
   });
 };
 
@@ -16,14 +21,18 @@ export const show = (req, res) => {
 
   connection.query(movieQuery, [id], (err, movieResult) => {
     if (err) return res.status(500).json({ error: err });
+    if (!movieResult.length) return res.status(404).json({ error: "Movie not found" });
 
     connection.query(reviewsQuery, [id], (err, reviewResults) => {
       if (err) return res.status(500).json({ error: err });
 
-      res.json({
+      const movie_cover = {
         ...movieResult[0],
+        image: `movies_cover/${movieResult[0].title.toLowerCase().replace(/\s/g, "_")}.jpg`,
         reviews: reviewResults
-      });
+      };
+
+      res.json(movie_cover);
     });
   });
 };
