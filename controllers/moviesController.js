@@ -1,5 +1,7 @@
 import connection from "../data/db.js";
 
+
+// lista film con copertina
 export const index = (req, res) => {
   const sql = "SELECT * FROM db_movies.movies";
   connection.query(sql, (err, results) => {
@@ -14,6 +16,7 @@ export const index = (req, res) => {
 };
 
 
+// dettaglio film con recensioni
 export const show = (req, res) => {
   const { id } = req.params;
   const movieQuery = "SELECT * FROM movies WHERE id = ?";
@@ -37,3 +40,21 @@ export const show = (req, res) => {
   });
 };
 
+
+
+// creazione nuova recensione
+export const createReview = (req, res) => {
+  const { movie_id, name, vote, text } = req.body;
+
+  if (!movie_id || !name || !vote || !text) {
+    return res.status(400).json({ error: "Hey! you missed a spot" });
+  }
+
+  const sql = "INSERT INTO reviews (movie_id, name, vote, text) VALUES (?, ?, ?, ?)";
+  connection.query(sql, [movie_id, name, vote, text], (err, result) => {
+    if (err) return res.status(500).json({ error: err });
+
+    const newReview = { id: result.insertId, movie_id, name, vote, text };
+    res.status(201).json(newReview);
+  })
+}
