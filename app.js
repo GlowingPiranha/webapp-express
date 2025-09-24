@@ -14,9 +14,9 @@ const PORT = process.env.PORT || 3000;
 // middleware
 app.use(cors());
 
-app.use(express.json());
-
 app.use(express.static("public"));
+
+app.use(express.json());
 
 // rotte
 app.use("/movies", moviesRouter);
